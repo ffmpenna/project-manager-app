@@ -1,0 +1,65 @@
+version: '3.8'
+services:
+  backend:
+    build: ./backend
+    container_name: task_manager_backend
+    ports:
+      - '5000:5000'
+    volumes:
+      - ./backend:/app
+    environment:
+      NODE_ENV: development
+      DB_HOST_DEV: db_dev
+      DB_HOST_TEST: db_test
+      DB_USER: ${DB_USER}
+      DB_PASSWORD: ${DB_PASSWORD}
+      DB_PORT_DEV: ${DB_PORT_DEV}
+    depends_on:
+      db_dev:
+        condition: service_healthy
+      db_test:
+        condition: service_healthy
+
+  frontend:
+    build: ./frontend
+    container_name: task_manager_frontend
+    ports:
+      - '3000:3000'
+    depends_on:
+      - backend
+  db_dev:
+    image: mysql:8.0
+    container_name: db_dev
+    environment:
+      DB_USER: ${DB_USER}
+      MYSQL_ROOT_PASSWORD: ${DB_PASSWORD}
+      MYSQL_DATABASE: ${MYSQL_DATABASE_DEV}
+    healthcheck:
+      test: ['CMD', 'mysqladmin', 'ping', '-h', 'localhost']
+      timeout: 10s
+      retries: 5
+    ports:
+      - '3306:3306'
+    volumes:
+      - mysql_data_dev:/var/lib/mysql
+
+  db_test:
+    image: mysql:8.0
+    container_name: db_test
+    environment:
+      DB_USER: ${DB_USER}
+      MYSQL_ROOT_PASSWORD: ${DB_PASSWORD}
+      MYSQL_DATABASE: ${MYSQL_DATABASE_TEST}
+    healthcheck:
+      # Deve aguardar o banco ficar operacional
+      test: ['CMD', 'mysqladmin', 'ping', '-h', 'localhost']
+      timeout: 10s
+      retries: 5
+    ports:
+      - '3307:3306'
+    volumes:
+      - mysql_data_test:/var/lib/mysql
+
+volumes:
+  mysql_data_dev:
+  mysql_data_test:
