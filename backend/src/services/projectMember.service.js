@@ -25,7 +25,7 @@ const getProjectMembers = async ({ projectId }) => {
           },
         ],
       },
-      transaction,
+      transaction
     );
 
     const { members } = project.get({ plain: true });
@@ -63,10 +63,12 @@ const getProjectsByUser = async ({ userId }) => {
 
     const { memberProjects } = user.get({ plain: true });
 
-    const formattedProjects = memberProjects.map(({ ProjectMember, ...project }) => ({
-      ...project,
-      role: ProjectMember.role,
-    }));
+    const formattedProjects = memberProjects.map(
+      ({ ProjectMember, ...project }) => ({
+        ...project,
+        role: ProjectMember.role,
+      })
+    );
 
     return { count: memberProjects.length, projects: formattedProjects };
   });
@@ -76,6 +78,11 @@ const addProjectMembers = async ({ projectId, assignedById, members }) => {
   return handleTransaction(async (transaction) => {
     await verifyProjectExists({ projectId, transaction });
     await verifyManyUsersExists({ members, transaction });
+    await verifyProjectMemberExists({
+      projectId,
+      userId: assignedById,
+      transaction,
+    });
     await verifyConflictMembers({ members, projectId, transaction });
 
     const addedMembers = await ProjectMember.bulkCreate(
@@ -84,7 +91,7 @@ const addProjectMembers = async ({ projectId, assignedById, members }) => {
         userId: member.userId,
         role: member.role || 'member',
       })),
-      { transaction },
+      { transaction }
     );
 
     notifyMany({
@@ -98,16 +105,16 @@ const addProjectMembers = async ({ projectId, assignedById, members }) => {
   });
 };
 
-const removeProjectMember = async ({ projectId, userId }) => {
+const removeProjectMember = async ({ projectId, memberId }) => {
   return handleTransaction(async (transaction) => {
     await Promise.all([
       verifyProjectExists({ projectId, transaction }),
-      verifyUserExists({ userId, transaction }),
-      verifyProjectMemberExists({ projectId, userId, transaction }),
+      verifyUserExists({ userId: memberId, transaction }),
+      verifyProjectMemberExists({ projectId, userId: memberId, transaction }),
     ]);
 
     const deletedCount = await ProjectMember.destroy({
-      where: { projectId, userId },
+      where: { projectId, userId: memberId },
       transaction,
     });
 
@@ -115,17 +122,21 @@ const removeProjectMember = async ({ projectId, userId }) => {
   });
 };
 
-const updateProjectMemberRole = async ({ projectId, userId, role }) => {
+const updateProjectMemberRole = async ({ projectId, memberId, role }) => {
   return handleTransaction(async (transaction) => {
     await verifyProjectExists({ projectId, transaction });
-    await verifyProjectMemberExists({ projectId, userId, transaction });
+    await verifyProjectMemberExists({
+      projectId,
+      userId: memberId,
+      transaction,
+    });
 
     const [affectedRows] = await ProjectMember.update(
       { role },
       {
-        where: { userId, projectId },
+        where: { userId: memberId, projectId },
         transaction,
-      },
+      }
     );
 
     return { affectedRows };

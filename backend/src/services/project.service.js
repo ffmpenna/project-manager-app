@@ -1,6 +1,9 @@
-const { Project, Task } = require('../models/');
+const { Project, ProjectMember, Task } = require('../models/');
 const handleTransaction = require('../utils/handleTransaction');
-const { verifyProjectExists, verifyProjectOwnership } = require('../validations');
+const {
+  verifyProjectExists,
+  verifyProjectOwnership,
+} = require('../validations');
 
 const getAllProjects = async ({ createdBy }) => {
   return handleTransaction(async (transaction) => {
@@ -22,7 +25,11 @@ const insertProject = async ({ projectData, userId }) => {
   return handleTransaction(async (transaction) => {
     const project = await Project.create(
       { createdBy: userId, ...projectData },
-      { transaction },
+      { transaction }
+    );
+    await ProjectMember.create(
+      { projectId: project.id, userId, role: 'admin' },
+      { transaction }
     );
 
     return { project };

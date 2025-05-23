@@ -7,12 +7,14 @@ const {
   assignMemberValidations,
   verifyTaskExists,
   patchTaskStatusValidations,
+  verifyProjectMemberExists,
 } = require('../validations');
 const { notifyMany } = require('./notification.service');
 
-const createTask = async ({ projectId, taskData }) => {
+const createTask = async ({ userId, projectId, taskData }) => {
   return handleTransaction(async (transaction) => {
     await verifyProjectExists({ projectId, transaction });
+    await verifyProjectMemberExists({ projectId, userId, transaction });
 
     const task = await Task.create({ projectId, ...taskData }, { transaction });
     return { task };
@@ -39,7 +41,10 @@ const getTasksByUser = async ({ userId }) => {
   return handleTransaction(async (transaction) => {
     await verifyUserExists({ userId, transaction });
 
-    const tasks = await Task.findAll({ where: { assignedTo: userId }, transaction });
+    const tasks = await Task.findAll({
+      where: { assignedTo: userId },
+      transaction,
+    });
     return { count: tasks.length, tasks };
   });
 };
@@ -47,23 +52,28 @@ const getTasksByUser = async ({ userId }) => {
 const removeTask = async ({ taskId, userId }) => {
   return handleTransaction(async (transaction) => {
     const { task } = await verifyTaskExists({ taskId, transaction });
-    const isMember = await ProjectMember.findOne({
-      where: { projectId: task.projectId, userId },
+    await verifyProjectMemberExists({
+      projectId: task.projectId,
+      userId,
       transaction,
     });
 
-    if (!isMember) {
-      throw new ForbiddenError(`Only project members can remove tasks.`);
-    }
-
-    const deletedCount = await Task.destroy({ where: { id: taskId }, transaction });
+    const deletedCount = await Task.destroy({
+      where: { id: taskId },
+      transaction,
+    });
     return { deletedCount };
   });
 };
 
-const updateTask = async ({ taskId, taskData }) => {
+const updateTask = async ({ userId, taskId, taskData }) => {
   return handleTransaction(async (transaction) => {
-    await verifyTaskExists({ taskId, transaction });
+    const { task } = await verifyTaskExists({ taskId, transaction });
+    await verifyProjectMemberExists({
+      projectId: task.projectId,
+      userId,
+      transaction,
+    });
     const [affectedRows] = await Task.update(taskData, {
       where: { id: taskId },
       transaction,
@@ -72,8 +82,14 @@ const updateTask = async ({ taskId, taskData }) => {
   });
 };
 
-const patchTaskStatus = async ({ taskId, value }) => {
+const patchTaskStatus = async ({ userId, taskId, value }) => {
   return handleTransaction(async (transaction) => {
+    const { task } = await verifyTaskExists({ taskId, transaction });
+    await verifyProjectMemberExists({
+      userId,
+      projectId: task.projectId,
+      transaction,
+    });
     await patchTaskStatusValidations({ taskId, value, transaction });
 
     const [affectedRows] = await Task.update(
@@ -81,7 +97,7 @@ const patchTaskStatus = async ({ taskId, value }) => {
       {
         where: { id: taskId },
         transaction,
-      },
+      }
     );
     return { affectedRows };
   });
@@ -89,7 +105,12 @@ const patchTaskStatus = async ({ taskId, value }) => {
 
 const assignMemberToTask = async ({ assignedToId, assignedById, taskId }) => {
   return handleTransaction(async (transaction) => {
-    await assignMemberValidations({ userId: assignedToId, taskId, transaction });
+    await assignMemberValidations({
+      assignedById,
+      assignedToId,
+      taskId,
+      transaction,
+    });
     const { projectId } = await Task.findByPk(taskId, { transaction });
 
     const [affectedRows] = await Task.update(
@@ -97,7 +118,7 @@ const assignMemberToTask = async ({ assignedToId, assignedById, taskId }) => {
       {
         where: { id: taskId },
         transaction,
-      },
+      }
     );
 
     await notifyMany({
@@ -111,16 +132,21 @@ const assignMemberToTask = async ({ assignedToId, assignedById, taskId }) => {
   });
 };
 
-const unassignTask = async ({ taskId }) => {
+const unassignTask = async ({ userId, taskId }) => {
   return handleTransaction(async (transaction) => {
-    await verifyTaskExists({ taskId, transaction });
+    const { task } = await verifyTaskExists({ taskId, transaction });
+    await verifyProjectMemberExists({
+      userId,
+      projectId: task.projectId,
+      transaction,
+    });
 
     const [affectedRows] = await Task.update(
       { assignedTo: null },
       {
         where: { id: taskId },
         transaction,
-      },
+      }
     );
     return { affectedRows };
   });

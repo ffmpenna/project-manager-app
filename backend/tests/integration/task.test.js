@@ -5,7 +5,10 @@ const { expect, use } = require('chai');
 const { ProjectMember, Task } = require('../../src/models');
 const { mockTask, createUser } = require('../helpers/');
 const { expectTaskShape } = require('../helpers/expectShape');
-const { cleanupTestData, createTestContext } = require('../helpers/testContext');
+const {
+  cleanupTestData,
+  createTestContext,
+} = require('../helpers/testContext');
 
 use(chaiHttp);
 
@@ -65,7 +68,10 @@ describe('Task Routes', () => {
     describe('GET /users/:userId/tasks', () => {
       beforeEach(async () => {
         for (const task of test.tasks) {
-          await Task.update({ assignedTo: test.user.id }, { where: { id: task.id } });
+          await Task.update(
+            { assignedTo: test.user.id },
+            { where: { id: task.id } }
+          );
         }
       });
 
@@ -78,7 +84,7 @@ describe('Task Routes', () => {
 
         response.body.data.tasks.forEach((task) => expectTaskShape(task));
         response.body.data.tasks.forEach((task) =>
-          expect(task.assignedTo).to.equal(test.user.id),
+          expect(task.assignedTo).to.equal(test.user.id)
         );
 
         expect(response.body.data.tasks).to.have.lengthOf(DEFAULT_LENGHT);
@@ -192,7 +198,7 @@ describe('Task Routes', () => {
 
         await Task.update(
           { assignedTo: test.user.id },
-          { where: { id: test.tasks[0].id } },
+          { where: { id: test.tasks[0].id } }
         );
 
         const checkAssign = await Task.findByPk(test.tasks[0].id);
@@ -323,7 +329,9 @@ describe('Task Routes', () => {
           .send({})
           .set('Authorization', `Bearer ${test.token}`);
         expect(res.status).to.equal(400);
-        expect(res.body.message).to.match(/at least one field must be updated/i);
+        expect(res.body.message).to.match(
+          /at least one field must be updated/i
+        );
       });
 
       it('should return 400 if dueDate is invalid', async () => {

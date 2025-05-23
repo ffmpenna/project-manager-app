@@ -1,5 +1,5 @@
 const { User } = require('../models/');
-const { NotFoundError } = require('../utils/CustomErrors');
+const { NotFoundError, ForbiddenError } = require('../utils/CustomErrors');
 const handleTransaction = require('../utils/handleTransaction');
 const { hashPassword } = require('../utils/hashPassword');
 const { verifyUserExists } = require('../validations');
@@ -34,9 +34,13 @@ const findOne = async ({ userId }) => {
   });
 };
 
-const update = async ({ name, email, password, userId }) => {
+const update = async ({ name, email, password, userId, requestingUserId }) => {
   return handleTransaction(async (transaction) => {
     await verifyUserExists({ userId, transaction });
+
+    if (userId !== requestingUserId) {
+      throw new ForbiddenError('You are not authorized to update this user');
+    }
 
     const updateFields = { name, email };
 
@@ -53,16 +57,18 @@ const update = async ({ name, email, password, userId }) => {
   });
 };
 
-const remove = async ({ userId }) => {
+const remove = async ({ userId, requestingUserId }) => {
   return handleTransaction(async (transaction) => {
+    await verifyUserExists({ userId, transaction });
+
+    if (userId !== requestingUserId) {
+      throw new ForbiddenError('You are not authorized to remove this user');
+    }
+
     const usersRemoved = await User.destroy({
       where: { id: userId },
       transaction,
     });
-
-    if (!usersRemoved) {
-      throw new NotFoundError(`User with ID ${userId} not found`);
-    }
 
     return { usersRemoved };
   });

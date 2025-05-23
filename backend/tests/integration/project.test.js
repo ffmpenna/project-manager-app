@@ -2,7 +2,13 @@ const app = require('../../src/app');
 const request = require('supertest');
 const chaiHttp = require('chai-http');
 const { expect, use } = require('chai');
-const { Project, User, Task, Comment, ProjectMember } = require('../../src/models');
+const {
+  Project,
+  User,
+  Task,
+  Comment,
+  ProjectMember,
+} = require('../../src/models');
 const {
   mockProject,
   mockUser,
@@ -10,7 +16,10 @@ const {
   createUser,
   createUsers,
 } = require('../helpers/');
-const { createTestContext, cleanupTestData } = require('../helpers/testContext');
+const {
+  createTestContext,
+  cleanupTestData,
+} = require('../helpers/testContext');
 const { expectProjectShape } = require('../helpers/expectShape');
 
 use(chaiHttp);
@@ -46,7 +55,7 @@ describe('Project Routes', () => {
         expect(response.status).to.equal(200);
         expect(response.body.data.projects).to.have.lengthOf(projects.length);
         response.body.data.projects.forEach((p) =>
-          expect(p.createdBy).to.equal(otherUser.id),
+          expect(p.createdBy).to.equal(otherUser.id)
         );
       });
     });
@@ -71,7 +80,9 @@ describe('Project Routes', () => {
 
         expect(response.status).to.equal(201);
         expect(response.body.data.project).to.have.property('id');
-        expect(response.body.data.project.createdBy).to.be.equal(test.loggedUser.id);
+        expect(response.body.data.project.createdBy).to.be.equal(
+          test.loggedUser.id
+        );
       });
     });
 
@@ -85,7 +96,9 @@ describe('Project Routes', () => {
         expect(updateResponse.status).to.equal(200);
 
         const checkUpdate = await Project.findByPk(test.projects[0].id);
-        expect(updateResponse.body.data.updatedProject).to.include(checkUpdate.get());
+        expect(updateResponse.body.data.updatedProject).to.include(
+          checkUpdate.get()
+        );
       });
     });
 
@@ -119,10 +132,12 @@ describe('Project Routes', () => {
       describe('GET /projects/:id/members', () => {
         it('lists members', async () => {
           const users = await createUsers(2);
-          const memberData = mockProjectMember(users.map((u) => u.id)).map((m) => ({
-            ...m,
-            projectId: test.projects[1].id,
-          }));
+          const memberData = mockProjectMember(users.map((u) => u.id)).map(
+            (m) => ({
+              ...m,
+              projectId: test.projects[1].id,
+            })
+          );
           await ProjectMember.bulkCreate(memberData);
 
           const response = await request(app)
@@ -165,6 +180,8 @@ describe('Project Routes', () => {
           const response = await request(app)
             .delete(`/projects/${test.projects[0].id}/members/${test.user.id}`)
             .set('Authorization', `Bearer ${test.token}`);
+          console.log(response.body);
+
           expect(response.status).to.equal(200);
           expect(response.body.message).to.match(/removed/i);
 
@@ -186,7 +203,7 @@ describe('Project Routes', () => {
 
         expect(response.status).to.equal(404);
         expect(response.body.message).to.include(
-          `Project with ID ${NON_EXISTENT_ID} not found`,
+          `Project with ID ${NON_EXISTENT_ID} not found`
         );
       });
 
@@ -219,7 +236,7 @@ describe('Project Routes', () => {
 
         expect(response.status).to.equal(400);
         expect(response.body.message).to.include(
-          '"title" length must be at least 3 characters long',
+          '"title" length must be at least 3 characters long'
         );
       });
     });
@@ -232,7 +249,9 @@ describe('Project Routes', () => {
           .set('Authorization', `Bearer ${test.token}`);
 
         expect(response.status).to.equal(400);
-        expect(response.body.message).to.include('At least one field must be updated');
+        expect(response.body.message).to.include(
+          'At least one field must be updated'
+        );
       });
 
       it('should return 400 if title is too long', async () => {
@@ -243,7 +262,7 @@ describe('Project Routes', () => {
 
         expect(response.status).to.equal(400);
         expect(response.body.message).to.include(
-          '"title" length must be less than or equal to 100 characters long',
+          '"title" length must be less than or equal to 100 characters long'
         );
       });
 
@@ -255,7 +274,7 @@ describe('Project Routes', () => {
 
         expect(response.status).to.equal(404);
         expect(response.body.message).to.include(
-          `Project with ID ${NON_EXISTENT_ID} not found`,
+          `Project with ID ${NON_EXISTENT_ID} not found`
         );
       });
     });
@@ -268,7 +287,7 @@ describe('Project Routes', () => {
 
         expect(response.status).to.equal(404);
         expect(response.body.message).to.include(
-          `Project with ID ${NON_EXISTENT_ID} not found`,
+          `Project with ID ${NON_EXISTENT_ID} not found`
         );
       });
     });
@@ -287,7 +306,7 @@ describe('Project Routes', () => {
 
         expect(response.status).to.equal(404);
         expect(response.body.message).to.include(
-          `Project with ID ${NON_EXISTENT_ID} not found`,
+          `Project with ID ${NON_EXISTENT_ID} not found`
         );
       });
 
@@ -316,7 +335,9 @@ describe('Project Routes', () => {
 
         expect(response.status).to.equal(409);
         expect(response.body.message).to.include('Users already in project');
-        expect(response.body.details.conflictingIds).to.include(existingUser.id);
+        expect(response.body.details.conflictingIds).to.include(
+          existingUser.id
+        );
       });
 
       it('should return 409 if the "role" field is neither "member" nor "admin"', async () => {

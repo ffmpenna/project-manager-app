@@ -24,11 +24,13 @@ const update = async (req, res, next) => {
   try {
     const { name, email, password } = req.body;
     const { userId } = req.params;
+    const { id: requestingUserId } = req.user;
     const data = await userService.update({
       name,
       email,
       password,
       userId: Number(userId),
+      requestingUser: Number(requestingUserId),
     });
     return res.status(200).json({ message: 'User updated.', data });
   } catch (error) {
@@ -39,7 +41,12 @@ const update = async (req, res, next) => {
 const remove = async (req, res, next) => {
   try {
     const { userId } = req.params;
-    const data = await userService.remove({ userId: Number(userId) });
+    const { id: requestingUserId } = req.user;
+
+    const data = await userService.remove({
+      userId: Number(userId),
+      requestingUserId: Number(requestingUserId),
+    });
     return res.status(200).json({ message: 'User removed.', data });
   } catch (error) {
     next(error);

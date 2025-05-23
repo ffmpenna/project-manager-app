@@ -5,7 +5,12 @@ const createTask = async (req, res, next) => {
   try {
     const taskData = req.body;
     const { projectId } = req.params;
-    const data = await taskService.createTask({ projectId: Number(projectId), taskData });
+    const { id: userId } = req.user;
+    const data = await taskService.createTask({
+      userId: Number(userId),
+      projectId: Number(projectId),
+      taskData,
+    });
     return res.status(201).json({ message: 'Task created.', data });
   } catch (error) {
     next(error);
@@ -58,8 +63,13 @@ const removeTask = async (req, res, next) => {
 const updateTask = async (req, res, next) => {
   try {
     const { taskId } = req.params;
+    const { id: userId } = req.user;
     const taskData = req.body;
-    const data = await taskService.updateTask({ taskId: Number(taskId), taskData });
+    const data = await taskService.updateTask({
+      userId: Number(userId),
+      taskId: Number(taskId),
+      taskData,
+    });
     return res.status(200).json({ message: 'Task updated.', data });
   } catch (error) {
     next(error);
@@ -70,8 +80,13 @@ const patchTaskStatus = async (req, res, next) => {
   try {
     const { taskId } = req.params;
     const { value } = req.query;
+    const { id: userId } = req.user;
 
-    const data = await taskService.patchTaskStatus({ taskId: Number(taskId), value });
+    const data = await taskService.patchTaskStatus({
+      userId: Number(userId),
+      taskId: Number(taskId),
+      value,
+    });
     return res.status(200).json({ message: 'Task status updated.', data });
   } catch (error) {
     next(error);
@@ -97,7 +112,11 @@ const assignMemberToTask = async (req, res, next) => {
 const unassignTask = async (req, res, next) => {
   try {
     const { taskId } = req.params;
-    const data = await taskService.unassignTask({ taskId: Number(taskId) });
+    const { id: userId } = req.user;
+    const data = await taskService.unassignTask({
+      userId: Number(userId),
+      taskId: Number(taskId),
+    });
     return res.status(200).json({ message: 'Task unassigned.', data });
   } catch (error) {
     next(error);

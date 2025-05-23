@@ -17,43 +17,51 @@ route.post(
   '/',
   authenticateToken,
   validate(createProjectSchema, 'Could not create project.'),
-  projectController.createProject,
+  projectController.createProject
 );
 route.put(
   '/:projectId',
   authenticateToken,
   validate(updateProjectSchema, 'Could not update project.'),
-  projectController.updateProject,
+  projectController.updateProject
 );
 route.delete('/:projectId', authenticateToken, projectController.removeProject);
 
 //ProjectMembers Related Routes
-route.get('/:projectId/members', authenticateToken, projectController.getProjectMembers);
+route.get(
+  '/:projectId/members',
+  authenticateToken,
+  projectController.getProjectMembers
+);
 route.post(
   '/:projectId/members',
   authenticateToken,
   validate(addMemberSchema, 'Could not add member to project.'),
-  projectController.addProjectMembers,
+  projectController.addProjectMembers
 );
 route.put(
-  '/:projectId/members/:userId',
+  '/:projectId/members/:memberId',
   authenticateToken,
   validate(updateRoleSchema, 'Could not update member role.'),
-  projectController.updateProjectMemberRole,
+  projectController.updateProjectMemberRole
 );
 route.delete(
-  '/:projectId/members/:userId',
+  '/:projectId/members/:memberId',
   authenticateToken,
-  projectController.removeProjectMember,
+  projectController.removeProjectMember
 );
 
 // Tasks related Routes
-route.get('/:projectId/tasks', authenticateToken, projectController.getProjectTasks);
+route.get(
+  '/:projectId/tasks',
+  authenticateToken,
+  projectController.getProjectTasks
+);
 route.post(
   '/:projectId/tasks',
   authenticateToken,
   validate(createTaskSchema, 'Could not create task.'),
-  taskController.createTask,
+  taskController.createTask
 );
 
 module.exports = route;

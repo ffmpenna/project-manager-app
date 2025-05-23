@@ -24,7 +24,12 @@ const verifyStatusValue = (value) => {
   }
 };
 
-const assignMemberValidations = async ({ userId, taskId, transaction }) => {
+const assignMemberValidations = async ({
+  assignedToId,
+  assignedById,
+  taskId,
+  transaction,
+}) => {
   const task = await Task.findByPk(taskId, { transaction });
 
   await verifyTaskExists({ taskId, transaction });
@@ -32,8 +37,10 @@ const assignMemberValidations = async ({ userId, taskId, transaction }) => {
   const projectId = task.get('projectId');
 
   await Promise.all([
-    verifyUserExists({ userId, transaction }),
-    verifyProjectMemberExists({ projectId, userId }),
+    verifyUserExists({ userId: assignedById, transaction }),
+    verifyUserExists({ userId: assignedToId, transaction }),
+    verifyProjectMemberExists({ projectId, userId: assignedById, transaction }),
+    verifyProjectMemberExists({ projectId, userId: assignedToId, transaction }),
   ]);
 };
 
