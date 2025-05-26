@@ -5,7 +5,10 @@ const { faker } = require('@faker-js/faker');
 const { User, Project, ProjectMember } = require('../../src/models');
 const { mockUser, mockProject, mockRegisterUser } = require('../helpers');
 const { expect, use } = require('chai');
-const { createTestContext, cleanupTestData } = require('../helpers/testContext');
+const {
+  createTestContext,
+  cleanupTestData,
+} = require('../helpers/testContext');
 
 use(chaiHttp);
 
@@ -38,7 +41,11 @@ describe('User Routes', () => {
           .set('Authorization', `Bearer ${test.token}`);
 
         expect(response.status).to.equal(200);
-        expect(response.body.data.user).to.include.keys(['id', 'name', 'email']);
+        expect(response.body.data.user).to.include.keys([
+          'id',
+          'name',
+          'email',
+        ]);
       });
     });
 
@@ -46,7 +53,9 @@ describe('User Routes', () => {
       it('should only list projects that have a specific member within', async () => {
         const otherTestUser = await User.create(mockUser());
 
-        const userProjects = await Project.bulkCreate(mockProject(test.user.id, 5));
+        const userProjects = await Project.bulkCreate(
+          mockProject(test.user.id, 5)
+        );
         await Project.bulkCreate(mockProject(otherTestUser.id, 5));
 
         const memberships = userProjects.map((project) => ({
@@ -62,12 +71,16 @@ describe('User Routes', () => {
           .set('Authorization', `Bearer ${test.token}`);
 
         expect(response.status).to.equal(200);
-        expect(response.body.data.projects).to.have.lengthOf(userProjects.length);
+        expect(response.body.data.projects).to.have.lengthOf(
+          userProjects.length
+        );
 
         const returnedProjectIds = response.body.data.projects.map((p) => p.id);
         const expectedProjectIds = userProjects.map((p) => p.id);
 
-        expectedProjectIds.forEach((id) => expect(returnedProjectIds).to.include(id));
+        expectedProjectIds.forEach((id) =>
+          expect(returnedProjectIds).to.include(id)
+        );
       });
     });
 
@@ -76,12 +89,12 @@ describe('User Routes', () => {
         const updatedData = mockRegisterUser();
 
         const response = await request(app)
-          .put(`/users/${test.user.id}`)
+          .put(`/users/${test.loggedUser.id}`)
           .send(updatedData)
           .set('Authorization', `Bearer ${test.token}`);
 
         const { password, ...safeData } = updatedData;
-        const updatedUser = await User.findByPk(test.user.id);
+        const updatedUser = await User.findByPk(test.loggedUser.id);
 
         expect(response.status).to.equal(200);
         expect(Number(response.body.data.usersUpdated)).to.equal(1);
@@ -90,10 +103,31 @@ describe('User Routes', () => {
     });
 
     describe('DELETE /users/:id', () => {
+      let testRemoveUser;
+
+      before(async () => {
+        const userData = mockRegisterUser();
+
+        const registerResponse = await request(app)
+          .post('/auth/register')
+          .send(userData);
+
+        const loginResponse = await request(app)
+          .post('/auth/login')
+          .send({ email: userData.email, password: userData.password });
+
+        testRemoveUser = {
+          id: registerResponse.body.data.user.id,
+          email: registerResponse.body.data.user.email,
+          password: userData.password,
+          token: loginResponse.body.data.token,
+        };
+      });
+
       it('should delete a specific user', async () => {
         const response = await request(app)
-          .delete(`/users/${test.user.id}`)
-          .set('Authorization', `Bearer ${test.token}`);
+          .delete(`/users/${testRemoveUser.id}`)
+          .set('Authorization', `Bearer ${testRemoveUser.token}`);
 
         expect(response.status).to.equal(200);
         expect(response.body.data.usersRemoved).to.equal(1);
@@ -130,7 +164,9 @@ describe('User Routes', () => {
           .set('Authorization', `Bearer ${test.token}`);
 
         expect(response.status).to.equal(400);
-        expect(response.body.message).to.include('/name/ must contain only letters');
+        expect(response.body.message).to.include(
+          '/name/ must contain only letters'
+        );
       });
 
       it('should reject invalid short password update', async () => {
@@ -141,7 +177,7 @@ describe('User Routes', () => {
 
         expect(response.status).to.equal(400);
         expect(response.body.message).to.include(
-          'length must be at least 8 characters long',
+          'length must be at least 8 characters long'
         );
       });
       it('should reject invalid only uppercase password update', async () => {
@@ -151,7 +187,9 @@ describe('User Routes', () => {
           .set('Authorization', `Bearer ${test.token}`);
 
         expect(response.status).to.equal(400);
-        expect(response.body.message).to.include('must contain at least one lowercase');
+        expect(response.body.message).to.include(
+          'must contain at least one lowercase'
+        );
       });
       it('should reject invalid only lowercase password update', async () => {
         const response = await request(app)
@@ -160,7 +198,9 @@ describe('User Routes', () => {
           .set('Authorization', `Bearer ${test.token}`);
 
         expect(response.status).to.equal(400);
-        expect(response.body.message).to.include('must contain at least one uppercase');
+        expect(response.body.message).to.include(
+          'must contain at least one uppercase'
+        );
       });
       it('should reject invalid without special character password update', async () => {
         const response = await request(app)
@@ -170,7 +210,7 @@ describe('User Routes', () => {
 
         expect(response.status).to.equal(400);
         expect(response.body.message).to.include(
-          'must contain at least one special character',
+          'must contain at least one special character'
         );
       });
       it('should reject invalid without number password update', async () => {
@@ -180,7 +220,9 @@ describe('User Routes', () => {
           .set('Authorization', `Bearer ${test.token}`);
 
         expect(response.status).to.equal(400);
-        expect(response.body.message).to.include(' must contain at least one number');
+        expect(response.body.message).to.include(
+          ' must contain at least one number'
+        );
       });
 
       it('should return 404 for non-existent user', async () => {
