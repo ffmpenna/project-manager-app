@@ -9,43 +9,66 @@ const {
   assignTaskSchema,
 } = require('../validations');
 
+// ================================================ Task Routes ================================================ //
+
 route.get('/', authenticateToken, taskController.getAllTasks);
+
 route.get('/:taskId', authenticateToken, taskController.findOneTask);
+
 route.delete('/:taskId', authenticateToken, taskController.removeTask);
+
 route.put(
   '/:taskId',
   authenticateToken,
   validate(updateTaskSchema, 'Could not update task.'),
-  taskController.updateTask,
+  taskController.updateTask
 );
-route.patch('/:taskId/status', authenticateToken, taskController.patchTaskStatus);
+
+route.patch(
+  '/:taskId/status',
+  authenticateToken,
+  taskController.patchTaskStatus
+);
+
 route.patch(
   '/:taskId/assign',
   authenticateToken,
   validate(assignTaskSchema),
-  taskController.assignMemberToTask,
+  taskController.assignMemberToTask
 );
-route.patch('/:taskId/unassign', authenticateToken, taskController.unassignTask);
 
-// Comments
-route.get('/:taskId/comments', authenticateToken, commentController.getAllTaskComments);
+route.patch(
+  '/:taskId/unassign',
+  authenticateToken,
+  taskController.unassignTask
+);
+
+// ================================================ Comments Related Routes ================================================ //
+
+route.get(
+  '/:taskId/comments',
+  authenticateToken,
+  commentController.getAllTaskComments
+);
 
 route.post(
   '/:taskId/comments',
   authenticateToken,
   validate(createCommentSchema, 'Could not create comment.'),
-  commentController.createComment,
+  commentController.createComment
 );
+
 route.put(
   '/:taskId/comments/:commentId',
   authenticateToken,
   validate(updateCommentSchema, 'Could not update comment.'),
-  commentController.updateComment,
+  commentController.updateComment
 );
+
 route.delete(
   '/:taskId/comments/:commentId',
   authenticateToken,
-  commentController.removeComment,
+  commentController.removeComment
 );
 
 module.exports = route;

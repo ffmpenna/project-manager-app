@@ -10,48 +10,58 @@ const {
 } = require('../validations');
 const { projectController, taskController } = require('../controllers');
 
-//Project Routes
+// ================================================ Projects Routes ================================================ //
+
 route.get('/', authenticateToken, projectController.getAllProjects);
+
 route.get('/:projectId', authenticateToken, projectController.findOneProject);
+
 route.post(
   '/',
   authenticateToken,
   validate(createProjectSchema, 'Could not create project.'),
   projectController.createProject
 );
+
 route.put(
   '/:projectId',
   authenticateToken,
   validate(updateProjectSchema, 'Could not update project.'),
   projectController.updateProject
 );
+
 route.delete('/:projectId', authenticateToken, projectController.removeProject);
 
-//ProjectMembers Related Routes
+// ================================================ Project Members Related Routes ================================================ //
+
 route.get(
   '/:projectId/members',
   authenticateToken,
   projectController.getProjectMembers
 );
+
 route.post(
   '/:projectId/members',
   authenticateToken,
   validate(addMemberSchema, 'Could not add member to project.'),
   projectController.addProjectMembers
 );
+
 route.put(
   '/:projectId/members/:memberId',
   authenticateToken,
   validate(updateRoleSchema, 'Could not update member role.'),
   projectController.updateProjectMemberRole
 );
+
 route.delete(
   '/:projectId/members/:memberId',
   authenticateToken,
   projectController.removeProjectMember
 );
 
-// Tasks related Routes
+// ================================================ Tasks Related Routes ================================================ //
+
 route.get(
   '/:projectId/tasks',
   authenticateToken,

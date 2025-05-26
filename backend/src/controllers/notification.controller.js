@@ -1,10 +1,13 @@
 const { notificationService } = require('../services');
 
 const getUserNotifications = async (req, res, next) => {
+  const userId = req.user.id;
+  const { onlyUnread } = req.query;
   try {
-    const userId = req.user.id;
-    const { onlyUnread } = req.query;
-    const data = await notificationService.getUserNotifications({ userId, onlyUnread });
+    const data = await notificationService.getUserNotifications({
+      userId,
+      onlyUnread,
+    });
     return res.status(200).json({ message: 'Notifications listed.', data });
   } catch (error) {
     next(error);
@@ -12,9 +15,9 @@ const getUserNotifications = async (req, res, next) => {
 };
 
 const markAsRead = async (req, res, next) => {
+  const userId = req.user.id;
+  const { notificationId } = req.params;
   try {
-    const userId = req.user.id;
-    const { notificationId } = req.params;
     const data = await notificationService.markAsRead({
       userId: Number(userId),
       notificationId: Number(notificationId),
@@ -27,9 +30,9 @@ const markAsRead = async (req, res, next) => {
 };
 
 const markAllAsRead = async (req, res, next) => {
+  const userId = req.user.id;
+  const notificationId = req.params.id;
   try {
-    const userId = req.user.id;
-    const notificationId = req.params.id;
     const data = await notificationService.markAsRead({
       userId,
       notificationId,

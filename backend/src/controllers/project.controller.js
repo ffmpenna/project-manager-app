@@ -1,9 +1,8 @@
 const { projectService, projectMemberService } = require('../services');
-const mapStatusHTTP = require('../utils/mapStatusHTTP');
 
 const getAllProjects = async (req, res, next) => {
+  const { createdBy } = req.query;
   try {
-    const { createdBy } = req.query;
     const data = await projectService.getAllProjects({ createdBy });
     return res.status(200).json({ message: 'Projects listed.', data });
   } catch (error) {
@@ -12,8 +11,8 @@ const getAllProjects = async (req, res, next) => {
 };
 
 const getProjectMembers = async (req, res, next) => {
+  const { projectId } = req.params;
   try {
-    const { projectId } = req.params;
     const data = await projectMemberService.getProjectMembers({
       projectId: Number(projectId),
     });
@@ -24,8 +23,8 @@ const getProjectMembers = async (req, res, next) => {
 };
 
 const findOneProject = async (req, res, next) => {
+  const { projectId } = req.params;
   try {
-    const { projectId } = req.params;
     const data = await projectService.findOneProject({
       projectId: Number(projectId),
     });
@@ -36,9 +35,9 @@ const findOneProject = async (req, res, next) => {
 };
 
 const createProject = async (req, res, next) => {
+  const { id: userId } = req.user;
+  const projectData = req.body;
   try {
-    const { id: userId } = req.user;
-    const projectData = req.body;
     const data = await projectService.insertProject({
       projectData,
       userId: Number(userId),
@@ -50,10 +49,10 @@ const createProject = async (req, res, next) => {
 };
 
 const updateProject = async (req, res, next) => {
+  const projectData = req.body;
+  const { projectId } = req.params;
+  const { id: userId } = req.user;
   try {
-    const projectData = req.body;
-    const { projectId } = req.params;
-    const { id: userId } = req.user;
     const data = await projectService.updateProject({
       projectData,
       projectId: Number(projectId),
@@ -66,9 +65,9 @@ const updateProject = async (req, res, next) => {
 };
 
 const removeProject = async (req, res, next) => {
+  const { projectId } = req.params;
+  const { id: userId } = req.user;
   try {
-    const { projectId } = req.params;
-    const { id: userId } = req.user;
     const data = await projectService.removeProject({
       projectId: Number(projectId),
       userId: Number(userId),
@@ -80,10 +79,10 @@ const removeProject = async (req, res, next) => {
 };
 
 const addProjectMembers = async (req, res, next) => {
+  const { projectId } = req.params;
+  const members = req.body;
+  const { id: assignedById } = req.user;
   try {
-    const { projectId } = req.params;
-    const members = req.body;
-    const { id: assignedById } = req.user;
     const data = await projectMemberService.addProjectMembers({
       projectId: Number(projectId),
       assignedById: Number(assignedById),
@@ -96,20 +95,20 @@ const addProjectMembers = async (req, res, next) => {
 };
 
 const getProjectsByUserId = async (req, res, next) => {
+  const { userId } = req.params;
   try {
-    const { userId } = req.params;
     const data = await projectMemberService.getProjectsByUser({
       userId: Number(userId),
     });
-    return res.status(200).json({ message: 'Members listed.', data });
+    return res.status(200).json({ message: 'Projects listed.', data });
   } catch (error) {
     next(error);
   }
 };
 
 const removeProjectMember = async (req, res, next) => {
+  const { projectId, memberId } = req.params;
   try {
-    const { projectId, memberId } = req.params;
     const data = await projectMemberService.removeProjectMember({
       projectId: Number(projectId),
       memberId: Number(memberId),
@@ -121,9 +120,9 @@ const removeProjectMember = async (req, res, next) => {
 };
 
 const updateProjectMemberRole = async (req, res, next) => {
+  const { projectId, memberId } = req.params;
+  const { role } = req.body;
   try {
-    const { projectId, memberId } = req.params;
-    const { role } = req.body;
     const data = await projectMemberService.updateProjectMemberRole({
       projectId: Number(projectId),
       memberId: Number(memberId),
@@ -136,8 +135,8 @@ const updateProjectMemberRole = async (req, res, next) => {
 };
 
 const getProjectTasks = async (req, res, next) => {
+  const { projectId } = req.params;
   try {
-    const { projectId } = req.params;
     const data = await projectService.getProjectTasks({
       projectId: Number(projectId),
     });

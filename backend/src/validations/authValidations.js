@@ -2,6 +2,7 @@ const { User } = require('../models/');
 const { comparePassword } = require('../utils/hashPassword');
 const { UnauthorizedError } = require('../utils/CustomErrors');
 
+// This function validates user credentials during authentication.
 const authValidations = async ({ email, password, transaction }) => {
   const user = await User.findOne({ where: { email }, transaction });
 

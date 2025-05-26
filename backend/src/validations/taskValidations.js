@@ -24,6 +24,7 @@ const verifyStatusValue = (value) => {
   }
 };
 
+// This function validates the assignment of a task to a member.
 const assignMemberValidations = async ({
   assignedToId,
   assignedById,
@@ -36,6 +37,7 @@ const assignMemberValidations = async ({
 
   const projectId = task.get('projectId');
 
+  // Verify that the assigned and the assignee users exists and are members of the project.
   await Promise.all([
     verifyUserExists({ userId: assignedById, transaction }),
     verifyUserExists({ userId: assignedToId, transaction }),

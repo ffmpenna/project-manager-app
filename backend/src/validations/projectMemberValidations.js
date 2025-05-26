@@ -2,7 +2,11 @@ const { ProjectMember } = require('../models');
 const { ConflictError, ForbiddenError } = require('../utils/CustomErrors');
 const { verifyUserExists } = require('./userValidations');
 
-const verifyProjectMemberExists = async ({ projectId, userId, transaction }) => {
+const verifyProjectMemberExists = async ({
+  projectId,
+  userId,
+  transaction,
+}) => {
   await verifyUserExists({ userId, transaction });
   const member = await ProjectMember.findOne({
     where: { projectId, userId },
@@ -10,10 +14,13 @@ const verifyProjectMemberExists = async ({ projectId, userId, transaction }) => 
   });
 
   if (!member) {
-    throw new ForbiddenError(`User ${userId} is not a member of project ${projectId}`);
+    throw new ForbiddenError(
+      `User ${userId} is not a member of project ${projectId}`
+    );
   }
 };
 
+// This function checks if the provided members are already part of the project and if so returns each conflicted members.
 const verifyConflictMembers = async ({ members, projectId, transaction }) => {
   const userIds = members.map((m) => m.userId);
   const conflictedMembers = await ProjectMember.findAll({

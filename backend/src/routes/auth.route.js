@@ -3,16 +3,18 @@ const validate = require('../middlewares/validation.middleware');
 const { createUserSchema, loginUserSchema } = require('../validations');
 const { authController } = require('../controllers');
 
+// ================================================ Authorization Routes ================================================ //
+
 route.post(
   '/register',
   validate(createUserSchema, 'Could not create user.'),
-  authController.register,
+  authController.register
 );
 
 route.post(
   '/login',
   validate(loginUserSchema, 'Could not login user.'),
-  authController.login,
+  authController.login
 );
 
 module.exports = route;

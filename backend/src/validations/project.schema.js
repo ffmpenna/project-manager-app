@@ -2,7 +2,6 @@ const Joi = require('joi');
 
 const titleSchema = Joi.string().min(3).max(100).trim();
 const descriptionSchema = Joi.string().max(500).trim();
-const createdBySchema = Joi.number().integer().positive();
 
 const roleSchema = Joi.string().valid('member', 'admin').messages({
   'any.only':
@@ -28,7 +27,9 @@ const updateProjectSchema = Joi.object({
 
 const addMemberSchema = Joi.array().items(memberSchema);
 
-const updateRoleSchema = Joi.object({ role: Joi.string().valid('member', 'admin') })
+const updateRoleSchema = Joi.object({
+  role: Joi.string().valid('member', 'admin'),
+})
   .min(1)
   .message('At least one field must be updated');
 module.exports = {

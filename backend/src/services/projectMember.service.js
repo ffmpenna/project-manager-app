@@ -11,8 +11,10 @@ const { notifyMany } = require('./notification.service');
 
 const getProjectMembers = async ({ projectId }) => {
   return handleTransaction(async (transaction) => {
+    // Verify that the project exists.
     await verifyProjectExists({ projectId, transaction });
 
+    // Fetch the project along with its members details.
     const project = await Project.findByPk(
       projectId,
       {
@@ -37,6 +39,7 @@ const getProjectMembers = async ({ projectId }) => {
       };
     }
 
+    // Format the members to include their roles and exclude unnecessary attributes.
     const formattedMembers = members.map(({ ProjectMember, ...member }) => ({
       ...member,
       role: ProjectMember.role,
@@ -48,8 +51,10 @@ const getProjectMembers = async ({ projectId }) => {
 
 const getProjectsByUser = async ({ userId }) => {
   return handleTransaction(async (transaction) => {
+    // Verify that the user exists.
     await verifyUserExists({ userId, transaction });
 
+    // Fetch all projects related with the user.
     const user = await User.findByPk(userId, {
       include: [
         {
@@ -63,6 +68,7 @@ const getProjectsByUser = async ({ userId }) => {
 
     const { memberProjects } = user.get({ plain: true });
 
+    // Format response to include users roles in each project and exclude unnecessary attributes.
     const formattedProjects = memberProjects.map(
       ({ ProjectMember, ...project }) => ({
         ...project,
@@ -76,6 +82,8 @@ const getProjectsByUser = async ({ userId }) => {
 
 const addProjectMembers = async ({ projectId, assignedById, members }) => {
   return handleTransaction(async (transaction) => {
+    // Verify that the project exists and the user who is trying to add members to the project exists.
+    // Verify that the members to be added exist and are not already part of the project.
     await verifyProjectExists({ projectId, transaction });
     await verifyManyUsersExists({ members, transaction });
     await verifyProjectMemberExists({
@@ -94,6 +102,7 @@ const addProjectMembers = async ({ projectId, assignedById, members }) => {
       { transaction }
     );
 
+    // Notify all added members about their addition to the project.
     notifyMany({
       userIds: members.map((member) => member.userId),
       type: 'PROJECT_ASSIGNED',
@@ -107,6 +116,7 @@ const addProjectMembers = async ({ projectId, assignedById, members }) => {
 
 const removeProjectMember = async ({ projectId, memberId }) => {
   return handleTransaction(async (transaction) => {
+    // Verify that the project exists, the user exists, and the user is a member of the project.
     await Promise.all([
       verifyProjectExists({ projectId, transaction }),
       verifyUserExists({ userId: memberId, transaction }),
@@ -124,6 +134,7 @@ const removeProjectMember = async ({ projectId, memberId }) => {
 
 const updateProjectMemberRole = async ({ projectId, memberId, role }) => {
   return handleTransaction(async (transaction) => {
+    // Verify that the project exists, the user exists, and the user is a member of the project.
     await verifyProjectExists({ projectId, transaction });
     await verifyProjectMemberExists({
       projectId,

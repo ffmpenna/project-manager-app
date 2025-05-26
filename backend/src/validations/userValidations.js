@@ -10,12 +10,15 @@ const verifyUserExists = ({ userId, transaction }) =>
     transaction,
   });
 
+// This function checks if multiple users exist in the database.
 const verifyManyUsersExists = async ({ members, transaction }) => {
   const userIds = members.map((m) => m.userId);
   const users = await User.findAll({ where: { id: userIds }, transaction });
 
   if (users.length !== members.length) {
-    const missingIds = userIds.filter((id) => !users.some((u) => String(u.id) === id));
+    const missingIds = userIds.filter(
+      (id) => !users.some((u) => String(u.id) === id)
+    );
 
     throw new NotFoundError('Users not found', { missingIds });
   }

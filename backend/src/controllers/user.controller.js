@@ -1,36 +1,35 @@
 const { userService } = require('../services');
-const mapStatusHTTP = require('../utils/mapStatusHTTP');
 
-const getAll = async (req, res, next) => {
+const getAllUsers = async (req, res, next) => {
   try {
-    const data = await userService.getAll();
+    const data = await userService.getAllUsers();
     return res.status(200).json({ message: 'Users listed.', data });
   } catch (error) {
     next(error);
   }
 };
 
-const findOne = async (req, res, next) => {
+const findOneUser = async (req, res, next) => {
+  const { userId } = req.params;
   try {
-    const { userId } = req.params;
-    const data = await userService.findOne({ userId: Number(userId) });
+    const data = await userService.findOneUser({ userId: Number(userId) });
     return res.status(200).json({ message: 'User found.', data });
   } catch (error) {
     next(error);
   }
 };
 
-const update = async (req, res, next) => {
+const updateUser = async (req, res, next) => {
+  const { name, email, password } = req.body;
+  const { userId } = req.params;
+  const { id: requestingUserId } = req.user;
   try {
-    const { name, email, password } = req.body;
-    const { userId } = req.params;
-    const { id: requestingUserId } = req.user;
-    const data = await userService.update({
+    const data = await userService.updateUser({
       name,
       email,
       password,
       userId: Number(userId),
-      requestingUser: Number(requestingUserId),
+      requestingUserId: Number(requestingUserId),
     });
     return res.status(200).json({ message: 'User updated.', data });
   } catch (error) {
@@ -38,12 +37,11 @@ const update = async (req, res, next) => {
   }
 };
 
-const remove = async (req, res, next) => {
+const removeUser = async (req, res, next) => {
+  const { userId } = req.params;
+  const { id: requestingUserId } = req.user;
   try {
-    const { userId } = req.params;
-    const { id: requestingUserId } = req.user;
-
-    const data = await userService.remove({
+    const data = await userService.removeUser({
       userId: Number(userId),
       requestingUserId: Number(requestingUserId),
     });
@@ -54,8 +52,8 @@ const remove = async (req, res, next) => {
 };
 
 module.exports = {
-  getAll,
-  findOne,
-  update,
-  remove,
+  getAllUsers,
+  findOneUser,
+  updateUser,
+  removeUser,
 };

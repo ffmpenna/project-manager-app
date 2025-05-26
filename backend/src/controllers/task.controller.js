@@ -1,11 +1,10 @@
 const { taskService } = require('../services');
-const mapStatusHTTP = require('../utils/mapStatusHTTP');
 
 const createTask = async (req, res, next) => {
+  const taskData = req.body;
+  const { projectId } = req.params;
+  const { id: userId } = req.user;
   try {
-    const taskData = req.body;
-    const { projectId } = req.params;
-    const { id: userId } = req.user;
     const data = await taskService.createTask({
       userId: Number(userId),
       projectId: Number(projectId),
@@ -18,8 +17,8 @@ const createTask = async (req, res, next) => {
 };
 
 const findOneTask = async (req, res, next) => {
+  const { taskId } = req.params;
   try {
-    const { taskId } = req.params;
     const data = await taskService.findOneTask({ taskId: Number(taskId) });
     return res.status(200).json({ message: 'Task found.', data });
   } catch (error) {
@@ -37,8 +36,8 @@ const getAllTasks = async (req, res, next) => {
 };
 
 const getTasksByUser = async (req, res, next) => {
+  const { userId } = req.params;
   try {
-    const { userId } = req.params;
     const data = await taskService.getTasksByUser({ userId: Number(userId) });
     return res.status(200).json({ message: 'User tasks listed.', data });
   } catch (error) {
@@ -47,9 +46,9 @@ const getTasksByUser = async (req, res, next) => {
 };
 
 const removeTask = async (req, res, next) => {
+  const { taskId } = req.params;
+  const { id: userId } = req.user;
   try {
-    const { taskId } = req.params;
-    const { id: userId } = req.user;
     const data = await taskService.removeTask({
       taskId: Number(taskId),
       userId: Number(userId),
@@ -61,10 +60,10 @@ const removeTask = async (req, res, next) => {
 };
 
 const updateTask = async (req, res, next) => {
+  const { taskId } = req.params;
+  const { id: userId } = req.user;
+  const taskData = req.body;
   try {
-    const { taskId } = req.params;
-    const { id: userId } = req.user;
-    const taskData = req.body;
     const data = await taskService.updateTask({
       userId: Number(userId),
       taskId: Number(taskId),
@@ -77,11 +76,10 @@ const updateTask = async (req, res, next) => {
 };
 
 const patchTaskStatus = async (req, res, next) => {
+  const { taskId } = req.params;
+  const { value } = req.query;
+  const { id: userId } = req.user;
   try {
-    const { taskId } = req.params;
-    const { value } = req.query;
-    const { id: userId } = req.user;
-
     const data = await taskService.patchTaskStatus({
       userId: Number(userId),
       taskId: Number(taskId),
@@ -94,10 +92,10 @@ const patchTaskStatus = async (req, res, next) => {
 };
 
 const assignMemberToTask = async (req, res, next) => {
+  const { userId: assignedToId } = req.body;
+  const { taskId } = req.params;
+  const { id: assignedById } = req.user;
   try {
-    const { userId: assignedToId } = req.body;
-    const { taskId } = req.params;
-    const { id: assignedById } = req.user;
     const data = await taskService.assignMemberToTask({
       assignedToId: Number(assignedToId),
       assignedById: Number(assignedById),
@@ -110,9 +108,9 @@ const assignMemberToTask = async (req, res, next) => {
 };
 
 const unassignTask = async (req, res, next) => {
+  const { taskId } = req.params;
+  const { id: userId } = req.user;
   try {
-    const { taskId } = req.params;
-    const { id: userId } = req.user;
     const data = await taskService.unassignTask({
       userId: Number(userId),
       taskId: Number(taskId),

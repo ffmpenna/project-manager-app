@@ -4,8 +4,9 @@ const handleTransaction = require('../utils/handleTransaction');
 const { hashPassword } = require('../utils/hashPassword');
 const { verifyUserExists } = require('../validations');
 
-const getAll = async () => {
+const getAllUsers = async () => {
   return handleTransaction(async (transaction) => {
+    // Fetch all users excluding the passwordHash attribute
     const foundUsers = await User.findAll({
       attributes: {
         exclude: 'passwordHash',
@@ -17,8 +18,9 @@ const getAll = async () => {
   });
 };
 
-const findOne = async ({ userId }) => {
+const findOneUser = async ({ userId }) => {
   return handleTransaction(async (transaction) => {
+    // Verify that the user exists
     const user = await User.findByPk(userId, {
       attributes: {
         exclude: 'passwordHash',
@@ -34,8 +36,16 @@ const findOne = async ({ userId }) => {
   });
 };
 
-const update = async ({ name, email, password, userId, requestingUserId }) => {
+const updateUser = async ({
+  name,
+  email,
+  password,
+  userId,
+  requestingUserId,
+}) => {
   return handleTransaction(async (transaction) => {
+    // Verify that the user exists
+    // and that the requesting user is the same as the user being updated.
     await verifyUserExists({ userId, transaction });
 
     if (userId !== requestingUserId) {
@@ -57,8 +67,10 @@ const update = async ({ name, email, password, userId, requestingUserId }) => {
   });
 };
 
-const remove = async ({ userId, requestingUserId }) => {
+const removeUser = async ({ userId, requestingUserId }) => {
   return handleTransaction(async (transaction) => {
+    // Verify that the user exists
+    // and that the requesting user is the same as the user being removed.
     await verifyUserExists({ userId, transaction });
 
     if (userId !== requestingUserId) {
@@ -75,8 +87,8 @@ const remove = async ({ userId, requestingUserId }) => {
 };
 
 module.exports = {
-  getAll,
-  findOne,
-  update,
-  remove,
+  getAllUsers,
+  findOneUser,
+  updateUser,
+  removeUser,
 };

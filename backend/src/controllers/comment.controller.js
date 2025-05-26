@@ -1,5 +1,4 @@
 const { commentService } = require('../services');
-const mapStatusHTTP = require('../utils/mapStatusHTTP');
 
 const getAllTaskComments = async (req, res, next) => {
   const { taskId } = req.params;

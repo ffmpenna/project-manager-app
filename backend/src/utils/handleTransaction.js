@@ -1,5 +1,7 @@
 const { sequelize } = require('../models/');
 
+// This utility function handles database transactions
+// preventing data inconsistencies if something go wrong in the middle of the transaction.
 const handleTransaction = async (callback) => {
   const transaction = await sequelize.transaction();
   try {

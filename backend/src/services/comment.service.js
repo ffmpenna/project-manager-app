@@ -11,7 +11,10 @@ const { notifyMany } = require('./notification.service');
 
 const getAllTaskComments = async (taskId) => {
   return handleTransaction(async (transaction) => {
+    // Verify that the task exists and the user is a member of the project.
     await verifyTaskExists({ taskId, transaction });
+
+    // Fetch all comments for the task, including user details.
     const comments = await Comment.findAll({
       where: {
         taskId,
@@ -32,7 +35,10 @@ const getAllTaskComments = async (taskId) => {
 
 const getCommentsByUserId = async (userId) => {
   return handleTransaction(async (transaction) => {
+    // Verify that the user exists.
     await verifyUserExists({ userId, transaction });
+
+    // Fetch all comments made by the user, including task details.
     const comments = await Comment.findAll({
       where: { author: userId },
       include: [
@@ -50,14 +56,22 @@ const getCommentsByUserId = async (userId) => {
 
 const createComment = async ({ taskId, authorId, content }) => {
   return handleTransaction(async (transaction) => {
+    // Verify that the task exists and the user is a member of the project.
     const { task } = await verifyTaskExists({ taskId, transaction });
     const projectId = task.get('projectId');
-    await verifyProjectMemberExists({ projectId, userId: authorId, transaction });
+    await verifyProjectMemberExists({
+      projectId,
+      userId: authorId,
+      transaction,
+    });
+
     const comment = await Comment.create({
       taskId,
       author: authorId,
       content,
     });
+
+    // Notify the user assigned to the task about the new comment.
     await notifyMany({
       userIds: [task.get('assignedTo')],
       type: 'COMMENT',
@@ -75,6 +89,7 @@ const createComment = async ({ taskId, authorId, content }) => {
 
 const updateComment = async ({ commentId, userId, content }) => {
   return handleTransaction(async (transaction) => {
+    // Verify that the comment exists and belongs to the user.
     await Promise.all([
       verifyCommentExists({ commentId, transaction }),
       verifyCommentBelongsToUser({ commentId, userId, transaction }),
@@ -82,7 +97,7 @@ const updateComment = async ({ commentId, userId, content }) => {
 
     const [affectedRows] = await Comment.update(
       { content },
-      { where: { id: commentId }, transaction },
+      { where: { id: commentId }, transaction }
     );
     return { affectedRows };
   });
@@ -90,6 +105,7 @@ const updateComment = async ({ commentId, userId, content }) => {
 
 const removeComment = async ({ commentId, userId }) => {
   return handleTransaction(async (transaction) => {
+    // Verify that the comment exists and belongs to the user.
     await Promise.all([
       verifyCommentExists({ commentId, transaction }),
       verifyCommentBelongsToUser({ commentId, userId, transaction }),

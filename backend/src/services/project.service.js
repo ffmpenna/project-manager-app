@@ -3,6 +3,7 @@ const handleTransaction = require('../utils/handleTransaction');
 const {
   verifyProjectExists,
   verifyProjectOwnership,
+  verifyUserExists,
 } = require('../validations');
 
 const getAllProjects = async ({ createdBy }) => {
@@ -16,6 +17,7 @@ const getAllProjects = async ({ createdBy }) => {
 
 const findOneProject = async ({ projectId }) => {
   return handleTransaction(async (transaction) => {
+    // Verify if the project exists.
     const { project } = await verifyProjectExists({ projectId, transaction });
     return { project };
   });
@@ -23,10 +25,15 @@ const findOneProject = async ({ projectId }) => {
 
 const insertProject = async ({ projectData, userId }) => {
   return handleTransaction(async (transaction) => {
+    // Verify if the user exists before creating a project.
+    await verifyUserExists({ userId, transaction });
+
     const project = await Project.create(
       { createdBy: userId, ...projectData },
       { transaction }
     );
+
+    // Automatically add the user as an admin member of the created project.
     await ProjectMember.create(
       { projectId: project.id, userId, role: 'admin' },
       { transaction }
@@ -38,10 +45,11 @@ const insertProject = async ({ projectData, userId }) => {
 
 const updateProject = async ({ projectData, projectId, userId }) => {
   return handleTransaction(async (transaction) => {
+    // Verify if the project exists.
     const { project } = await verifyProjectExists({ projectId, transaction });
 
+    // Verify if the user is the owner of the project.
     const ownerId = project.createdBy;
-
     await verifyProjectOwnership({ ownerId, userId });
 
     const [affectedRows] = await Project.update(projectData, {
@@ -57,7 +65,10 @@ const updateProject = async ({ projectData, projectId, userId }) => {
 
 const removeProject = async ({ projectId, userId }) => {
   return handleTransaction(async (transaction) => {
+    // Verify if the project exists.
     const { project } = await verifyProjectExists({ projectId, transaction });
+
+    // Verify if the user is the owner of the project.
     const ownerId = project.createdBy;
     await verifyProjectOwnership({ ownerId, userId });
 
@@ -72,6 +83,7 @@ const removeProject = async ({ projectId, userId }) => {
 
 const getProjectTasks = async ({ projectId }) => {
   return handleTransaction(async (transaction) => {
+    // Verify if the project exists.
     await verifyProjectExists({ projectId, transaction });
 
     const tasks = await Task.findAll({
