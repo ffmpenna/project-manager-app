@@ -1,4 +1,4 @@
-const { Task, ProjectMember } = require('../models/');
+const { Task } = require('../models/');
 const { ForbiddenError } = require('../utils/CustomErrors');
 const handleTransaction = require('../utils/handleTransaction');
 const {
@@ -6,7 +6,6 @@ const {
   verifyUserExists,
   assignMemberValidations,
   verifyTaskExists,
-  patchTaskStatusValidations,
   verifyProjectMemberExists,
   verifyStatusValue,
 } = require('../validations');

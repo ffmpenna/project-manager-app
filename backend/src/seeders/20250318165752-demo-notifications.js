@@ -1,26 +1,66 @@
 'use strict';
 
 module.exports = {
-  up: async (queryInterface, Sequelize) => {
+  async up(queryInterface, Sequelize) {
     await queryInterface.bulkInsert(
       'notifications',
       [
         {
-          user_id: 1, // João Silva
+          type: 'TASK_ASSIGNED',
           message: 'Você foi atribuído à tarefa "Configurar banco de dados".',
-          is_read: false,
+          metadata: JSON.stringify({
+            taskId: 1,
+            projectId: 1,
+            assignedToId: 1,
+            assignedById: 1,
+          }),
         },
         {
-          user_id: 2, // Maria Oliveira
-          message: 'Nova tarefa "Criar interface do usuário" atribuída a você.',
-          is_read: true,
+          type: 'TASK_ASSIGNED',
+          message: 'Você foi atribuído à tarefa "Configurar o Sequelize".',
+          metadata: JSON.stringify({
+            taskId: 3,
+            projectId: 2,
+            assignedToId: 2,
+            assignedById: 2,
+          }),
+        },
+        {
+          type: 'COMMENT',
+          message: 'Novo comentário na tarefa "Configurar banco de dados".',
+          metadata: JSON.stringify({
+            taskId: 1,
+            projectId: 1,
+            commentId: 1,
+            authorId: 1,
+          }),
+        },
+        {
+          type: 'COMMENT',
+          message: 'Novo comentário na tarefa "Configurar o Sequelize".',
+          metadata: JSON.stringify({
+            taskId: 1,
+            projectId: 1,
+            commentId: 2,
+            authorId: 2,
+          }),
+        },
+        {
+          type: 'COMMENT',
+          message: 'Novo comentário na tarefa "Configurar o Sequelize".',
+          metadata: JSON.stringify({
+            taskId: 3,
+            projectId: 2,
+            commentId: 2,
+            authorId: 2,
+          }),
         },
       ],
-      {},
+      {}
     );
   },
 
-  down: async (queryInterface, Sequelize) => {
+  async down(queryInterface, Sequelize) {
     await queryInterface.bulkDelete('notifications', null, {});
   },
 };

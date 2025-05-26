@@ -1,7 +1,7 @@
 'use strict';
 
 module.exports = {
-  up: async (queryInterface, Sequelize) => {
+  async up(queryInterface, Sequelize) {
     await queryInterface.bulkInsert(
       'users',
       [
@@ -16,11 +16,11 @@ module.exports = {
           password_hash: 'hash_da_senha_456', // Substitua por um hash real
         },
       ],
-      {},
+      {}
     );
   },
 
-  down: async (queryInterface, Sequelize) => {
+  async down(queryInterface, Sequelize) {
     await queryInterface.bulkDelete('users', null, {});
   },
 };

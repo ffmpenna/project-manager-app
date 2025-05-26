@@ -1,7 +1,7 @@
 'use strict';
 
 module.exports = {
-  up: async (queryInterface, Sequelize) => {
+  async up(queryInterface, Sequelize) {
     await queryInterface.bulkInsert(
       'tasks',
       [
@@ -30,11 +30,11 @@ module.exports = {
           due_date: new Date('2023-10-30'),
         },
       ],
-      {},
+      {}
     );
   },
 
-  down: async (queryInterface, Sequelize) => {
+  async down(queryInterface, Sequelize) {
     await queryInterface.bulkDelete('tasks', null, {});
   },
 };
