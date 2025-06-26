@@ -1,0 +1,155 @@
+export const projects = [
+  {
+    id: 1,
+    title: "Mobile App",
+    description: "Very elaborated description",
+    createdBy: "Fabio Penna",
+    color: "#7d39a2",
+    status: "in_progress",
+    tasks: {
+      todo: [
+        { id: 1, title: "Planejar escopo" },
+        { id: 2, title: "Levantar requisitos" },
+      ],
+      inProgress: [
+        { id: 3, title: "Desenvolver API" },
+        { id: 4, title: "Criar layout" },
+        { id: 3, title: "Desenvolver API" },
+        { id: 4, title: "Criar layout" },
+        { id: 3, title: "Desenvolver API" },
+        { id: 4, title: "Criar layout" },
+      ],
+      done: [
+        { id: 5, title: "Configurar repositório" },
+        { id: 6, title: "Instalar dependências" },
+        { id: 6, title: "Instalar dependências" },
+        { id: 6, title: "Instalar dependências" },
+        { id: 6, title: "Instalar dependências" },
+        { id: 6, title: "Instalar dependências" },
+      ],
+    },
+  },
+  {
+    id: 2,
+    title: "Website Redesign",
+    description: "Very elaborated description",
+    createdBy: "Fabio Penna",
+    color: "#f59e0b",
+    status: "done",
+    tasks: {
+      todo: [],
+      inProgress: [],
+      done: [
+        { id: 5, title: "Configurar repositório" },
+        { id: 3, title: "Desenvolver API" },
+        { id: 3, title: "Desenvolver API" },
+      ],
+    },
+  },
+  {
+    id: 3,
+    title: "Design System",
+    description: "Very elaborated description",
+    createdBy: "Fabio Penna",
+    color: "#10b981",
+    status: "in_progress",
+    tasks: {
+      todo: [
+        { id: 1, title: "Planejar escopo" },
+        { id: 2, title: "Levantar requisitos" },
+        { id: 1, title: "Planejar escopo" },
+      ],
+      inProgress: [
+        { id: 3, title: "Desenvolver API" },
+        { id: 4, title: "Criar layout" },
+        { id: 4, title: "Criar layout" },
+      ],
+      done: [
+        { id: 5, title: "Configurar repositório" },
+        { id: 6, title: "Instalar dependências" },
+        { id: 5, title: "Configurar repositório" },
+        { id: 6, title: "Instalar dependências" },
+        { id: 5, title: "Configurar repositório" },
+        { id: 6, title: "Instalar dependências" },
+      ],
+    },
+  },
+  {
+    id: 4,
+    title: "Wireframes",
+    description: "Very elaborated description",
+    createdBy: "Fabio Penna",
+    color: "#3b82f6",
+    status: "in_progress",
+    tasks: {
+      todo: [],
+      inProgress: [
+        { id: 3, title: "Desenvolver API" },
+        { id: 3, title: "Desenvolver API" },
+        { id: 4, title: "Criar layout" },
+      ],
+      done: [
+        { id: 5, title: "Configurar repositório" },
+        { id: 6, title: "Instalar dependências" },
+      ],
+    },
+  },
+  {
+    id: 5,
+    title: "New Layout",
+    description: "Very elaborated description",
+    createdBy: "Fabio Penna",
+    color: "#bb8200",
+    status: "done",
+    tasks: {
+      todo: [],
+      inProgress: [],
+      done: [
+        { id: 5, title: "Configurar repositório" },
+        { id: 6, title: "Instalar dependências" },
+      ],
+    },
+  },
+  {
+    id: 6,
+    title: "New Layout",
+    description: "Very elaborated description",
+    createdBy: "Fabio Penna",
+    color: "#bbae00",
+    status: "done",
+    tasks: {
+      todo: [],
+      inProgress: [],
+      done: [
+        { id: 5, title: "Configurar repositório" },
+        { id: 6, title: "Instalar dependências" },
+      ],
+    },
+  },
+  {
+    id: 7,
+    title: "New Layout",
+    description: "Very elaborated description",
+    createdBy: "Fabio Penna",
+    color: "#bbf253",
+    status: "in_progress",
+    tasks: {
+      todo: [
+        { id: 1, title: "Planejar escopo" },
+        { id: 2, title: "Levantar requisitos" },
+      ],
+      inProgress: [
+        { id: 3, title: "Desenvolver API" },
+        { id: 4, title: "Criar layout" },
+        { id: 3, title: "Desenvolver API" },
+        { id: 4, title: "Criar layout" },
+        { id: 3, title: "Desenvolver API" },
+        { id: 4, title: "Criar layout" },
+      ],
+      done: [
+        { id: 5, title: "Configurar repositório" },
+        { id: 6, title: "Instalar dependências" },
+      ],
+    },
+  },
+];

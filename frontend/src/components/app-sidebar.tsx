@@ -1,10 +1,4 @@
-import {
-  CircleSmall,
-  Home,
-  ListTodo,
-  LoaderPinwheel,
-  Settings,
-} from 'lucide-react';
+import { CircleSmall, Home, ListTodo, LoaderPinwheel, Settings } from "lucide-react";
 
 import {
   Sidebar,
@@ -16,47 +10,26 @@ import {
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
-} from '@/components/ui/sidebar';
-import { Separator } from './ui/separator';
+} from "@/components/ui/sidebar";
+import { Separator } from "./ui/separator";
+import { projects } from "../mocks/projects.mock";
+import { Link } from "react-router";
 
 const items = [
   {
-    title: 'Home',
-    url: '/',
+    title: "Home",
+    url: "/",
     icon: Home,
   },
   {
-    title: 'Tasks',
-    url: '/me/tasks',
+    title: "Tasks",
+    url: "/me/tasks",
     icon: ListTodo,
   },
   {
-    title: 'Settings',
-    url: '/settings',
+    title: "Settings",
+    url: "/settings",
     icon: Settings,
-  },
-];
-
-const projects = [
-  {
-    title: 'Mobile App',
-    url: '/projects/1',
-    color: '#7d39a2',
-  },
-  {
-    title: 'Website Redesign',
-    url: '/projects/2',
-    color: '#f59e0b',
-  },
-  {
-    title: 'Design System',
-    url: '/projects/3',
-    color: '#10b981',
-  },
-  {
-    title: 'Wireframes',
-    url: '/projects/4',
-    color: '#3b82f6',
   },
 ];
 
@@ -100,17 +73,17 @@ export function AppSidebar() {
         <Separator className="!w-9/10 !self-center" />
         <SidebarGroup>
           <SidebarGroupLabel>
-            <a href="/me/projects">MY PROJECTS</a>
+            <Link to="/me/projects">MY PROJECTS</Link>
           </SidebarGroupLabel>
           <SidebarGroupContent>
             <SidebarMenu>
               {projects.map((project) => (
                 <SidebarMenuItem key={project.title}>
                   <SidebarMenuButton asChild>
-                    <a href={project.url}>
+                    <Link to={`projects/${project.id}`}>
                       <CircleSmall fill={project.color} color={project.color} />
                       <span>{project.title}</span>
-                    </a>
+                    </Link>
                   </SidebarMenuButton>
                 </SidebarMenuItem>
               ))}
