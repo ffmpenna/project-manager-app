@@ -1,20 +1,32 @@
-type Task = {
-  id: number;
-  title: string;
-};
+import type { Task } from '@/types';
 
-type Tasks = {
-  todo: Task[];
-  inProgress: Task[];
-  done: Task[];
-};
+export const getProjectProgress = (tasks: Task[]) => {
+  let done = 0;
+  let inProgress = 0;
+  let todo = 0;
 
-export const getProjectProgress = (tasks: Tasks): number => {
-  const done = tasks.done.length;
-  const total = tasks.todo.length + tasks.inProgress.length + done;
+  for (const task of tasks) {
+    switch (task.status) {
+      case 'done':
+        done++;
+        break;
+      case 'in_progress':
+        inProgress++;
+        break;
+      case 'to_do':
+        todo++;
+        break;
+    }
+  }
 
-  if (total === 0) return 0;
+  const total = done + inProgress + todo;
+  const progress = total === 0 ? 0 : Math.round((done / total) * 100);
 
-  const progress = (done / total) * 100;
-  return Math.round(progress);
+  return {
+    done,
+    inProgress,
+    todo,
+    total,
+    progress,
+  };
 };

@@ -1,6 +1,6 @@
-import { useState } from "react";
-import ProjectCard from "@/components/Card";
-import { projects as allProjects } from "../mocks/projects.mock";
+import { useState } from 'react';
+import ProjectCard from '@/components/ProjectCard';
+import { projects as allProjects } from '../mocks/projects.mock';
 import {
   DropdownMenu,
   DropdownMenuTrigger,
@@ -9,35 +9,23 @@ import {
   DropdownMenuRadioGroup,
   DropdownMenuLabel,
   DropdownMenuSeparator,
-} from "@/components/ui/dropdown-menu";
+} from '@/components/ui/dropdown-menu';
 import {
   ArrowDownAz,
   ArrowDownNarrowWide,
   ArrowUpAz,
   ArrowUpNarrowWide,
   Funnel,
-} from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { getProjectProgress } from "@/helpers/getProjectProgress";
+} from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { filterProjects } from '@/helpers/projectFilter';
+import type { SortBy, StatusFilter } from '@/types';
 
 export default function Home() {
-  const [statusFilter, setStatusFilter] = useState("all");
-  const [sortBy, setSortBy] = useState("title-asc");
+  const [statusFilter, setStatusFilter] = useState<StatusFilter>('all');
+  const [sortBy, setSortBy] = useState<SortBy>('title-asc');
 
-  const filteredProjects = allProjects
-    .filter((project) => {
-      if (statusFilter === "all") return true;
-      return project.status === statusFilter;
-    })
-    .sort((a, b) => {
-      if (sortBy === "title-asc") return a.title.localeCompare(b.title);
-      if (sortBy === "title-desc") return b.title.localeCompare(a.title);
-      if (sortBy === "progress-asc")
-        return getProjectProgress(a.tasks) - getProjectProgress(b.tasks);
-      if (sortBy === "progress-desc")
-        return getProjectProgress(b.tasks) - getProjectProgress(a.tasks);
-      return 0;
-    });
+  const filteredProjects = filterProjects(allProjects, statusFilter, sortBy);
 
   return (
     <div className="p-5">
@@ -58,7 +46,7 @@ export default function Home() {
               <DropdownMenuSeparator />
               <DropdownMenuRadioGroup
                 value={statusFilter}
-                onValueChange={setStatusFilter}
+                onValueChange={(value) => setStatusFilter(value as StatusFilter)}
               >
                 <DropdownMenuRadioItem value="all">All</DropdownMenuRadioItem>
                 <DropdownMenuRadioItem value="in_progress">
@@ -78,7 +66,10 @@ export default function Home() {
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="start">
-              <DropdownMenuRadioGroup value={sortBy} onValueChange={setSortBy}>
+              <DropdownMenuRadioGroup
+                value={sortBy}
+                onValueChange={(value) => setSortBy(value as SortBy)}
+              >
                 <DropdownMenuLabel> Title </DropdownMenuLabel>
                 <DropdownMenuRadioItem value="title-asc">
                   <ArrowDownAz className="text-primary" /> A-Z
