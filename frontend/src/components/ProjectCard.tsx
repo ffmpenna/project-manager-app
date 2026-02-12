@@ -36,7 +36,6 @@ const colorOptions = [
 export default function ProjectCard({ project }: ProjectCardProps) {
   const [openLeave, setOpenLeave] = useState(false);
   const [openEdit, setOpenEdit] = useState(false);
-
   return (
     <Card className="h-full flex flex-col">
       <ProjectCardHeader
@@ -44,9 +43,7 @@ export default function ProjectCard({ project }: ProjectCardProps) {
         onEdit={() => setOpenEdit(true)}
         onLeave={() => setOpenLeave(true)}
       />
-
-      <ProjectCardProgress tasks={project.tasks} />
-
+      <ProjectCardProgress {...project} />
       <CardFooter>
         <ProjectCardMembers />
       </CardFooter>
