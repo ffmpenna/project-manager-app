@@ -39,6 +39,12 @@ Back/
 └── .sequelizerc
 ```
 
+## 📸 Diagrama EER
+
+Aqui está o "Diagrama EER" gerado pelo MYSql Workbench do banco de dados:
+
+![EER](./assets/diagrama_EER.png)
+
 ## ⚙️ Como Rodar
 
 ### Instalação:
