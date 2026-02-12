@@ -1,5 +1,9 @@
 # 📋 Project Manager App
 
+[![Deploy no Vercel](https://img.shields.io/badge/Vercel-Visualizar_Demo-black?logo=vercel)](https://project-manager-app-demo.vercel.app/)
+
+> **Nota:** A demonstração acima apresenta apenas o Frontend com dados fictícios (mocks).
+
 > ⚠️ **Status do Projeto:** Em Desenvolvimento (Work in Progress)
 >
 > Atualmente, o Frontend e o Backend operam de forma separada e **ainda não estão integrados**. O Frontend possui funcionalidades parciais e visuais em construção.
