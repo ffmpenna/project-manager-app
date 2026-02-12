@@ -1,118 +1,69 @@
-# 📋 Project Manager App
+# 🎨 Project Manager UI (Frontend)
 
-> ⚠️ **Status do Projeto:** Em Desenvolvimento (Work in Progress)
+> **Status:** 🚧 Em Desenvolvimento (Visual/Mock)
 >
-> Atualmente, o Frontend e o Backend operam de forma separada e **ainda não estão integrados**. O Frontend possui funcionalidades parciais e visuais em construção.
+> **Atenção:** O frontend ainda **não está integrado** com o backend. Atualmente ele utiliza dados mockados (fictícios) localizados em `src/mocks` para visualização das telas.
 
-## 📖 Sobre o Projeto
+Interface do usuário para o gerenciador de projetos.
 
-O **Project Manager App** é uma aplicação para gerenciamento de projetos. O objetivo é permitir a criação, organização e acompanhamento de tarefas e quadros de projetos.
+## 📸 Demonstração Visual
 
-Este repositório contém tanto a API (Backend) quanto a Interface do Usuário (Frontend) em uma estrutura de monorepo simples.
+Aqui estão algumas telas do projeto rodando localmente:
 
-## 🛠 Tecnologias Utilizadas
+### Dashboard Principal
 
-### Backend
-* **Node.js**
-* **Express**
-* **Sequelize** (ORM para banco de dados SQL)
-* **MySQL** (ou o banco configurado no seu ambiente)
-* **Jest/Supertest** (para testes de integração e unidade, conforme estrutura de pastas)
+![Dashboard](./assets/Home.png)
 
-### Frontend
-* **React**
-* **Vite** (deduzido pela estrutura moderna)
-* **Tailwind CSS** (estilização)
-* **Context API / Hooks** (gerenciamento de estado)
+### Edição Básica de Projetos
 
----
+![Dashboard](./assets/Edit.png)
 
-## ⚙️ Pré-requisitos
+### Tela de Tarefas
 
-Antes de começar, você precisará ter instalado em sua máquina:
-* [Node.js](https://nodejs.org/en/) (versão 18 ou superior recomendada)
-* [MySQL](https://www.mysql.com/) (ou o banco de dados de sua preferência configurado no Sequelize)
-* Gerenciador de pacotes `npm` ou `yarn`.
+![Nova Tarefa](./assets/Tasks.png)
 
----
+## 🛠 Tecnologias
 
-## 🚀 Como Rodar o Projeto
+- **React** (Vite)
+- **Tailwind CSS**
+- **Context API / Hooks**
+- **Mocks** (Dados estáticos para desenvolvimento)
 
-Como a integração ainda não foi feita, é necessário rodar os serviços em terminais separados.
+## 📂 Estrutura Principal
 
-### 1️⃣ Configurando e Rodando o Backend
+```bash
+Front/
+├── src/
+│   ├── components/
+│   ├── helpers/
+│   ├── hooks/
+│   ├── mocks/
+│   ├── pages/
+│   ├── types/
+│   └── utils/
+├── App.tsx
+├── index.css
+├── main.tsx
+...
+```
 
-1.  Acesse a pasta do backend:
-    ```bash
-    cd "Project Manager App/Back"
+## 🚀 Como Rodar
+
+1.  **Instalação:**
     ```
-
-2.  Instale as dependências:
-    ```bash
     npm install
     ```
+2.  **Iniciar Servidor de Desenvolvimento:**
 
-3.  Configure as variáveis de ambiente:
-    * Crie um arquivo `.env` na raiz da pasta `Back` (baseado no `.env.example` se houver, ou nas configurações do `.sequelizerc`).
-    * Defina as credenciais do banco de dados (`DB_USER`, `DB_PASS`, `DB_NAME`, etc.).
-
-4.  Rode as migrações do banco de dados (Sequelize):
-    ```bash
-    npx sequelize-cli db:migrate
     ```
-
-5.  Inicie o servidor:
-    ```bash
-    npm start
-    # ou para modo de desenvolvimento com hot-reload:
-    npm run dev
-    ```
-    *O servidor deve iniciar (geralmente na porta 3000 ou 3001).*
-
-### 2️⃣ Configurando e Rodando o Frontend
-
-1.  Abra um **novo terminal** e acesse a pasta do frontend:
-    ```bash
-    cd "Project Manager App/Front"
-    ```
-
-2.  Instale as dependências:
-    ```bash
-    npm install
-    ```
-
-3.  Inicie a aplicação React:
-    ```bash
     npm run dev
     ```
 
-4.  Acesse no seu navegador (geralmente em `http://localhost:5173` ou similar, verifique o terminal).
+    _Acesse o link mostrado no terminal (ex: http://localhost:5173)_
 
----
+## 📝 To-Do (Pendências)
 
-## 🚧 Roadmap & Pendências (To-Do)
-
-Este projeto ainda não está finalizado. Abaixo estão as principais tarefas pendentes para a versão 1.0:
-
-* **Integração:**
-    - [ ] Conectar o Frontend aos endpoints da API do Backend (Fetch/Axios).
-    - [ ] Tratar erros de API no Frontend.
-
-* **Frontend:**
-    - [ ] Finalizar componentes visuais (ajustes de CSS/Layout).
-    - [ ] Implementar fluxo completo de criação de projetos.
-    - [ ] Corrigir bugs de renderização/estado atuais.
-
-* **Backend:**
-    - [ ] Revisar validações de entrada.
-    - [ ] Garantir cobertura de testes nas rotas principais.
-
----
-
-## 🤝 Contribuição
-
-Como o projeto é pessoal e está em estágio inicial, sugestões são bem-vindas. Sinta-se à vontade para abrir uma *issue* se encontrar bugs críticos ao rodar o ambiente local.
-
----
-
-Desenvolvido por **Fábio Penna**.
+- [ ] Integrar `services` com a API do Backend.
+- [ ] Remover dados de `src/mocks` e usar dados reais.
+- [ ] Finalizar funcionalidades.
+- [ ] Ajustar responsividade.
