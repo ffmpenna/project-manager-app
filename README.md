@@ -64,7 +64,7 @@ Como a integração ainda não foi feita, é necessário rodar os serviços em t
 1.  Acesse a pasta do backend:
 
     ```bash
-    cd "Project Manager App/Back"
+    cd "/project-manager-app/backend"
     ```
 
 2.  Instale as dependências:
@@ -96,7 +96,7 @@ Como a integração ainda não foi feita, é necessário rodar os serviços em t
 1.  Abra um **novo terminal** e acesse a pasta do frontend:
 
     ```bash
-    cd "Project Manager App/Front"
+    cd "/project-manager-app/frontend"
     ```
 
 2.  Instale as dependências:
